@@ -42,6 +42,36 @@ Run with a persisted SQLite file:
 docker run --rm -p 8000:8000 -v "${PWD}\data:/app/data" -e TODO_DB_PATH=/app/data/todos.db todo-fastapi
 ```
 
+## Google Cloud Build
+
+`cloudbuild.yaml` builds and pushes this Docker Hub image:
+
+```bash
+ashan97/fast-api-to-do:latest
+```
+
+Create the `ashan97/fast-api-to-do` repository in Docker Hub and set its
+visibility to Public.
+
+Create a Docker Hub access token, then store it in Google Secret Manager:
+
+```bash
+gcloud secrets create dockerhub-token --replication-policy=automatic
+echo "YOUR_DOCKER_HUB_ACCESS_TOKEN" | gcloud secrets versions add dockerhub-token --data-file=-
+```
+
+Allow the Cloud Build service account to read the secret:
+
+```bash
+gcloud secrets add-iam-policy-binding dockerhub-token --member="serviceAccount:PROJECT_NUMBER@cloudbuild.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
+```
+
+Run the build:
+
+```bash
+gcloud builds submit --config cloudbuild.yaml .
+```
+
 ## APIs
 
 - `GET /health`
