@@ -9,6 +9,9 @@ steps:
     args:
       - push
       - "$_AR_HOSTNAME/$PROJECT_ID/$_AR_REPO/$_IMAGE_NAME:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
 #   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
 #     args:
 #       - run
